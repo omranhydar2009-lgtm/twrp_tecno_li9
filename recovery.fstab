@@ -1,0 +1,25 @@
+# Logical Partitions
+/system         erofs   system          display="System";logical;slotselect
+/vendor         erofs   vendor          display="Vendor";logical;slotselect
+/product        erofs   product         display="Product";logical;slotselect
+/system_ext     erofs   system_ext      display="System EXT";logical;slotselect
+/vendor_dlkm    erofs   vendor_dlkm     display="Vendor DLKM";logical;slotselect
+
+# Special Tecno Partitions (Found in your original fstab)
+/tr_mi          erofs   tr_mi           display="Tecno MI";logical;slotselect
+/tr_theme       erofs   tr_theme        display="Tecno Theme";logical;slotselect
+/tr_region      erofs   tr_region       display="Tecno Region";logical;slotselect
+/tr_product     erofs   tr_product      display="Tecno Product";logical;slotselect
+/tr_company     erofs   tr_company      display="Tecno Company";logical;slotselect
+
+# Standard Partitions
+/metadata       ext4    /dev/block/by-name/metadata     display="Metadata"
+/data           f2fs    /dev/block/by-name/userdata     fileencryption=aes-256-xts:aes-256-cts:v2+inlinecrypt_optimized,keydirectory=/metadata/vold/metadata_encryption
+/misc           emmc    /dev/block/by-name/misc         display="Misc"
+/boot           emmc    /dev/block/by-name/boot         display="Boot";slotselect
+/vendor_boot    emmc    /dev/block/by-name/vendor_boot  display="Vendor Boot";slotselect
+/vbmeta         emmc    /dev/block/by-name/vbmeta       display="VBMeta";slotselect
+
+# External Storage (Paths from platform manifest)
+/external_sd    vfat    /dev/block/mmcblk0p1            /dev/block/mmcblk0    flags=display="MicroSD";storage;wipeingui;removable
+/usb_otg        vfat    /dev/block/sdd1                 /dev/block/sdd        flags=display="USB-OTG";storage;wipeingui;removable

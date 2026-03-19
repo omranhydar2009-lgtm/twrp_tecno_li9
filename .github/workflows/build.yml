@@ -1,4 +1,4 @@
-name: Recovery Build Android 15 Latest
+name: Recovery Build Android 15 Final
 
 on:
   workflow_dispatch:
@@ -44,11 +44,13 @@ jobs:
         export ALLOW_MISSING_DEPENDENCIES=true
         export LC_ALL=C
         source build/envsetup.sh
-        lunch twrp_li9-trunk_staging-eng || lunch twrp_li9-ap2a-eng || lunch twrp_li9-eng
+        # Critical Fix for Android 15 Release Config
+        export TARGET_RELEASE=bundled_binaries
+        lunch twrp_li9-eng || lunch twrp_li9-userdebug
         mka recoveryimage -j$(nproc --all)
 
     - name: Upload TWRP
       uses: actions/upload-artifact@v4
       with:
-        name: TWRP-li9-Android15
+        name: TWRP-li9-Android15-Success
         path: work/out/target/product/li9/recovery.img

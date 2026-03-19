@@ -1,4 +1,4 @@
-name: Recovery Build
+name: Recovery Build Android 15 Latest
 
 on:
   workflow_dispatch:
@@ -10,17 +10,15 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Cleanup Space
+    - name: Cleanup & Maximize Space
       run: |
-        sudo rm -rf /usr/share/dotnet
-        sudo rm -rf /opt/ghc
-        sudo rm -rf "/usr/local/share/boost"
-        sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+        sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/share/boost
+        sudo docker image prune -a -f
 
-    - name: Install Dependencies
+    - name: Install Essential Tools
       run: |
         sudo apt-get update
-        sudo apt-get install -y binutils cpp-9 gcc-9 g++-9 python3 python3-pip git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev libncurses5-dev libssl-dev libxml2-utils xsltproc unzip liblz4-tool bc m4
+        sudo apt-get install -y bc build-essential zip curl scons libncurses5-dev git-core gnupg flex bison gperf libxml2-utils libssl-dev libcurl4-openssl-dev liblz4-tool python3 python-is-python3 openjdk-17-jdk m4 xsltproc unzip
 
     - name: Install Repo
       run: |
@@ -29,7 +27,7 @@ jobs:
         chmod a+x ~/bin/repo
         sudo ln -sf ~/bin/repo /usr/bin/repo
 
-    - name: Sync TWRP
+    - name: Sync TWRP Source (A14/A15)
       run: |
         mkdir work && cd work
         repo init --u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-14 --depth=1
@@ -40,16 +38,18 @@ jobs:
         cd work
         git clone ${{ github.server_url }}/${{ github.repository }} device/tecno/li9
 
-    - name: Run Build
+    - name: Execute Build
       run: |
         cd work
         export ALLOW_MISSING_DEPENDENCIES=true
+        export LC_ALL=C
         source build/envsetup.sh
-        lunch twrp_li9-eng
+        # محاولات الـ lunch المتوافقة مع أندرويد 15
+        lunch twrp_li9-trunk_staging-eng || lunch twrp_li9-ap2a-eng || lunch twrp_li9-eng
         mka recoveryimage -j$(nproc --all)
 
-    - name: Upload Artifact
+    - name: Upload TWRP
       uses: actions/upload-artifact@v4
       with:
-        name: twrp_tecno_li9
+        name: TWRP-li9-Android15
         path: work/out/target/product/li9/recovery.img

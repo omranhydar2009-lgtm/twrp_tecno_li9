@@ -51,5 +51,5 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: TWRP-Pova6Pro
+        name: twrp_tecno_li9
         path: work/out/target/product/li9/recovery.img

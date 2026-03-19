@@ -27,7 +27,7 @@ jobs:
         chmod a+x ~/bin/repo
         sudo ln -sf ~/bin/repo /usr/bin/repo
 
-    - name: Sync TWRP Source (A14/A15)
+    - name: Sync TWRP Source
       run: |
         mkdir work && cd work
         repo init --u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-14 --depth=1
@@ -44,7 +44,6 @@ jobs:
         export ALLOW_MISSING_DEPENDENCIES=true
         export LC_ALL=C
         source build/envsetup.sh
-        # محاولات الـ lunch المتوافقة مع أندرويد 15
         lunch twrp_li9-trunk_staging-eng || lunch twrp_li9-ap2a-eng || lunch twrp_li9-eng
         mka recoveryimage -j$(nproc --all)
 

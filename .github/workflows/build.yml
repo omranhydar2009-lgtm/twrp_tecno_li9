@@ -44,9 +44,8 @@ jobs:
         export ALLOW_MISSING_DEPENDENCIES=true
         export LC_ALL=C
         source build/envsetup.sh
-        # Critical Fix for Android 15 Release Config
-        export TARGET_RELEASE=bundled_binaries
-        lunch twrp_li9-eng || lunch twrp_li9-userdebug
+        # Strict Android 15 Triple-Combo Format
+        lunch twrp_li9-trunk_staging-eng
         mka recoveryimage -j$(nproc --all)
 
     - name: Upload TWRP
